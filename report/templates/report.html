@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume Analysis Report</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; color: #1a202c; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1rem; }
+
+  header { background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%); color: white; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; }
+  header h1 { font-size: 1.8rem; margin-bottom: 0.4rem; }
+  header p { opacity: 0.75; font-size: 0.9rem; }
+
+  .card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .card h2 { font-size: 1rem; font-weight: 700; color: #4a5568; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+
+  .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
+  .profile-item label { font-size: 0.72rem; color: #718096; text-transform: uppercase; font-weight: 700; }
+  .profile-item p { font-size: 0.95rem; margin-top: 0.2rem; font-weight: 500; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+  .score-big { font-size: 3rem; font-weight: 800; line-height: 1; }
+  .score-big.high { color: #38a169; }
+  .score-big.mid  { color: #d69e2e; }
+  .score-big.low  { color: #e53e3e; }
+  .score-sub { color: #718096; font-size: 0.85rem; margin-top: 0.4rem; }
+
+  .progress-row { margin: 0.5rem 0; }
+  .progress-row .label { display: flex; justify-content: space-between; font-size: 0.82rem; color: #4a5568; margin-bottom: 3px; }
+  .bar-bg { background: #edf2f7; border-radius: 6px; height: 10px; }
+  .bar-fill { height: 10px; border-radius: 6px; transition: width 0.3s; }
+
+  ul.tag-list { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+  ul.tag-list li { padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; }
+  .tag-blue    { background: #ebf8ff; color: #2b6cb0; }
+  .tag-green   { background: #f0fff4; color: #276749; }
+  .tag-red     { background: #fff5f5; color: #c53030; }
+  .tag-purple  { background: #faf5ff; color: #6b46c1; }
+  .tag-orange  { background: #fffaf0; color: #c05621; }
+  .tag-gray    { background: #f7fafc; color: #4a5568; }
+
+  .list-items { list-style: none; }
+  .list-items li { padding: 0.45rem 0; border-bottom: 1px solid #f7fafc; font-size: 0.88rem; line-height: 1.5; }
+  .list-items li:last-child { border-bottom: none; }
+  .list-items li::before { content: "→ "; color: #4299e1; font-weight: 700; }
+
+  .section-chip { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; margin: 0.2rem; }
+  .chip-present { background: #c6f6d5; color: #22543d; }
+  .chip-missing { background: #fed7d7; color: #742a2a; }
+
+  .edu-item { font-size: 0.88rem; padding: 0.4rem 0; border-bottom: 1px solid #f7fafc; }
+  .edu-item:last-child { border-bottom: none; }
+
+  .match-bar-wrap { margin: 0.75rem 0; }
+  .match-bar-wrap .lbl { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 3px; }
+  .match-fill { height: 12px; border-radius: 6px; background: linear-gradient(90deg, #4299e1, #667eea); }
+
+  .chart-box { min-height: 200px; }
+
+  footer { text-align: center; color: #a0aec0; font-size: 0.78rem; margin-top: 2rem; }
+
+  .category-block { margin-bottom: 0.8rem; }
+  .category-name { font-size: 0.78rem; font-weight: 700; color: #718096; text-transform: uppercase; margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Resume Analysis Report</h1>
+    <p>Rule-based analysis · No AI required · Fully offline</p>
+  </header>
+
+  <!-- Profile -->
+  <div class="card">
+    <h2>Profile</h2>
+    <div class="profile-grid">
+      <div class="profile-item"><label>Name</label><p>{{ extracted.name or "—" }}</p></div>
+      <div class="profile-item"><label>Email</label><p>{{ extracted.email or "—" }}</p></div>
+      <div class="profile-item"><label>Phone</label><p>{{ extracted.phone or "—" }}</p></div>
+      <div class="profile-item"><label>Experience</label><p>{{ extracted.years_of_experience or "—" }} yrs</p></div>
+      <div class="profile-item"><label>Word Count</label><p>{{ extracted.word_count }}</p></div>
+      <div class="profile-item"><label>Skills Found</label><p>{{ extracted.skills | length }}</p></div>
+    </div>
+  </div>
+
+  <!-- Score + Breakdown -->
+  <div class="two-col">
+    <div class="card">
+      <h2>Overall Score</h2>
+      {% set s = scores.overall_score %}
+      <div class="score-big {% if s >= 70 %}high{% elif s >= 40 %}mid{% else %}low{% endif %}">
+        {{ s }}<span style="font-size:1.2rem;font-weight:400">/100</span>
+      </div>
+      <p class="score-sub">
+        {% if s >= 70 %}Strong resume — keep it up!
+        {% elif s >= 40 %}Good foundation — a few improvements needed.
+        {% else %}Needs significant work — see suggestions below.{% endif %}
+      </p>
+      <div id="gauge" class="chart-box" style="margin-top:0.5rem;"></div>
+    </div>
+
+    <div class="card">
+      <h2>Score Breakdown</h2>
+      {% for category, score in scores.breakdown.items() %}
+      {% set max_s = scores.max_scores[category] %}
+      {% set pct = (score / max_s * 100) | int %}
+      <div class="progress-row">
+        <div class="label"><span>{{ category }}</span><span>{{ score }}/{{ max_s }}</span></div>
+        <div class="bar-bg">
+          <div class="bar-fill" style="width:{{ pct }}%; background:{% if pct >= 70 %}#68d391{% elif pct >= 40 %}#f6ad55{% else %}#fc8181{% endif %};"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Sections Detected -->
+  <div class="card">
+    <h2>Sections Detected</h2>
+    {% for sec in scores.present_sections %}
+      <span class="section-chip chip-present">✔ {{ sec }}</span>
+    {% endfor %}
+    {% for sec in scores.missing_sections %}
+      <span class="section-chip chip-missing">✘ {{ sec }}</span>
+    {% endfor %}
+  </div>
+
+  <!-- Skills -->
+  {% if extracted.skills_by_category %}
+  <div class="card">
+    <h2>Skills ({{ extracted.skills | length }} found)</h2>
+    {% set colors = ["tag-blue","tag-green","tag-purple","tag-orange","tag-gray","tag-red"] %}
+    {% for category, skills in extracted.skills_by_category.items() %}
+    {% set i = loop.index0 %}
+    <div class="category-block">
+      <div class="category-name">{{ category }}</div>
+      <ul class="tag-list">
+        {% for skill in skills %}
+        <li class="{{ colors[i % colors|length] }}">{{ skill }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+    <div id="skills-pie" class="chart-box" style="margin-top:1rem;"></div>
+  </div>
+  {% endif %}
+
+  <!-- Education -->
+  {% if extracted.education_snippets %}
+  <div class="card">
+    <h2>Education (Detected)</h2>
+    {% for edu in extracted.education_snippets %}
+    <div class="edu-item">{{ edu }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Feedback -->
+  <div class="two-col">
+    <div class="card">
+      <h2>Strengths</h2>
+      <ul class="list-items">
+        {% for s in feedback.strengths %}<li>{{ s }}</li>{% endfor %}
+        {% if not feedback.strengths %}<li style="color:#a0aec0;">No major strengths detected yet.</li>{% endif %}
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Weaknesses</h2>
+      <ul class="list-items">
+        {% for w in feedback.weaknesses %}<li>{{ w }}</li>{% endfor %}
+        {% if not feedback.weaknesses %}<li style="color:#68d391;">No major weaknesses found!</li>{% endif %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Suggestions</h2>
+    <ul class="list-items">
+      {% for s in feedback.suggestions %}<li>{{ s }}</li>{% endfor %}
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>ATS Optimization Tips</h2>
+    <ul class="list-items">
+      {% for tip in feedback.ats_tips %}<li>{{ tip }}</li>{% endfor %}
+    </ul>
+  </div>
+
+  <!-- Job Match -->
+  {% if job_match %}
+  <div class="card">
+    <h2>Job Description Match</h2>
+    {% set ms = job_match.match_score %}
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+      <div class="score-big {% if ms >= 70 %}high{% elif ms >= 45 %}mid{% else %}low{% endif %}" style="font-size:2.5rem;">
+        {{ ms }}<span style="font-size:1rem;font-weight:400">/100</span>
+      </div>
+      <p style="font-size:0.9rem;color:#4a5568;">{{ job_match.recommendation }}</p>
+    </div>
+    <div class="match-bar-wrap">
+      <div class="lbl"><span>Match Score</span><span>{{ ms }}%</span></div>
+      <div class="bar-bg"><div class="match-fill" style="width:{{ ms }}%;"></div></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h2>Matched Skills ({{ job_match.matched_skills | length }})</h2>
+      <ul class="tag-list">
+        {% for s in job_match.matched_skills %}<li class="tag-green">{{ s }}</li>{% endfor %}
+        {% if not job_match.matched_skills %}<li class="tag-gray">None detected</li>{% endif %}
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Missing Skills ({{ job_match.missing_skills | length }})</h2>
+      <ul class="tag-list">
+        {% for s in job_match.missing_skills %}<li class="tag-red">{{ s }}</li>{% endfor %}
+        {% if not job_match.missing_skills %}<li class="tag-green">All JD skills matched!</li>{% endif %}
+      </ul>
+    </div>
+  </div>
+  {% endif %}
+
+  <footer>Resume Analyzer — rule-based, fully offline · No data leaves your machine</footer>
+</div>
+
+<script>
+// Gauge
+(function(){
+  var s = {{ scores.overall_score }};
+  Plotly.newPlot('gauge',[{
+    type:'indicator', mode:'gauge+number', value:s,
+    gauge:{
+      axis:{range:[0,100]},
+      bar:{color: s>=70?'#38a169':s>=40?'#d69e2e':'#e53e3e'},
+      steps:[
+        {range:[0,40],color:'#fff5f5'},
+        {range:[40,70],color:'#fffbeb'},
+        {range:[70,100],color:'#f0fff4'}
+      ]
+    }
+  }],{margin:{t:20,b:10,l:20,r:20},height:180,paper_bgcolor:'white',
+      font:{family:'Segoe UI,system-ui,sans-serif'}},
+  {responsive:true,displayModeBar:false});
+})();
+
+{% if extracted.skills_by_category %}
+// Skills pie
+(function(){
+  var cats = {{ extracted.skills_by_category.keys() | list | tojson }};
+  var counts = {{ extracted.skills_by_category.values() | map("length") | list | tojson }};
+  Plotly.newPlot('skills-pie',[{
+    labels:cats, values:counts, type:'pie', hole:0.4,
+    marker:{colors:['#4299e1','#48bb78','#9f7aea','#ed8936','#718096','#fc8181']}
+  }],{margin:{t:10,b:10,l:10,r:10},height:220,paper_bgcolor:'white',
+      font:{family:'Segoe UI,system-ui,sans-serif'},
+      legend:{orientation:'h',y:-0.2}},
+  {responsive:true,displayModeBar:false});
+})();
+{% endif %}
+</script>
+</body>
+</html>
