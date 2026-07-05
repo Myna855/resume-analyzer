@@ -1,0 +1,41 @@
+We are hiring a talented Frontend Developer to build modern, responsive web applications for our SaaS platform.
+
+ABOUT THE ROLE:
+You will work on building and maintaining the frontend of our web application. You will collaborate with designers and backend developers to deliver great user experiences.
+
+RESPONSIBILITIES:
+- Develop responsive and accessible UI components using React and TypeScript
+- Integrate REST APIs and GraphQL endpoints into frontend applications
+- Optimize web performance for speed and scalability
+- Write unit and integration tests using Jest and Cypress
+- Work with designers to convert Figma designs into working UI
+- Participate in code reviews and follow best practices
+- Collaborate in an Agile team environment
+
+REQUIRED SKILLS:
+- Languages: HTML, CSS, JavaScript, TypeScript
+- Frameworks: React, Next.js
+- Styling: Tailwind CSS or Bootstrap
+- State Management: Redux or Context API
+- Testing: Jest
+- Version Control: Git, GitHub
+- API Integration: REST APIs
+
+GOOD TO HAVE:
+- Vue.js or Angular experience
+- GraphQL knowledge
+- Firebase or Supabase
+- CI/CD experience with GitHub Actions
+- Figma or Adobe XD
+
+EDUCATION:
+- B.Tech or B.E. in Computer Science or related field
+
+EXPERIENCE:
+- 0-2 years (Freshers with strong portfolio welcome)
+- Personal projects or open source contributions are a big plus
+
+SOFT SKILLS:
+- Eye for design and attention to detail
+- Good communication skills
+- Team player with ability to work independently

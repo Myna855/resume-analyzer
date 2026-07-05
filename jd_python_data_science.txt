@@ -1,0 +1,42 @@
+We are looking for a skilled Python Developer / Data Science Engineer to join our growing team.
+
+ABOUT THE ROLE:
+You will be responsible for building data pipelines, developing machine learning models, and creating APIs to serve predictions. You will work closely with the data and product teams.
+
+RESPONSIBILITIES:
+- Design and develop scalable data pipelines using Python and SQL
+- Build and deploy machine learning models for classification and regression tasks
+- Create REST APIs using Django or Flask to serve ML models
+- Perform exploratory data analysis and feature engineering
+- Collaborate with cross-functional teams using Agile and Scrum methodology
+- Write clean, well-documented and testable code
+- Monitor model performance and retrain when needed
+
+REQUIRED SKILLS:
+- Programming: Python, SQL
+- Machine Learning: Scikit-learn, XGBoost, Random Forest, regression, classification
+- Data Libraries: Pandas, NumPy, Matplotlib, Seaborn
+- Web Frameworks: Django or Flask
+- Databases: MySQL, PostgreSQL
+- Version Control: Git
+- Cloud: AWS (S3, EC2, Lambda)
+
+GOOD TO HAVE:
+- Deep Learning: TensorFlow or Keras or PyTorch
+- Data Visualization: Tableau or Power BI
+- Docker and Kubernetes
+- Apache Spark or Kafka
+- NLP experience
+
+EDUCATION:
+- B.Tech or B.E. in Computer Science, IT, or related field
+- CGPA 7.0 or above preferred
+
+EXPERIENCE:
+- 0-2 years of experience (Freshers with strong projects are welcome)
+- Internship experience in data science or software development is a plus
+
+SOFT SKILLS:
+- Strong problem solving and analytical thinking
+- Good communication and teamwork
+- Ability to work independently and meet deadlines

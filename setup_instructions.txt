@@ -1,0 +1,15 @@
+== Resume Analyzer Setup Instructions ==
+
+1. Install dependencies:
+   pip install -r requirements.txt
+
+2. Download the spaCy English model (required for name detection):
+   python -m spacy download en_core_web_sm
+
+3. Run the analyzer:
+   python main.py your_resume.pdf
+   python main.py your_resume.docx
+   python main.py your_resume.pdf --job job_description.txt
+   python main.py your_resume.pdf --output my_report.html --no-browser
+
+4. Supported resume formats: PDF (.pdf), Word (.docx)
